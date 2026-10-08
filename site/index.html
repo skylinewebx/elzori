@@ -1238,7 +1238,7 @@ function renderMenu(animate=true){
     menu.trigs.forEach(t=>t&&t.kill()); menu.trigs=[];
     if(animate&&HAS_GSAP&&!REDUCED) gsap.from(cards,{opacity:0,y:40,duration:.6,stagger:.06,ease:'power3.out',clearProps:'opacity,transform'});
     if(HAS_ST&&!REDUCED) cards.forEach(cd=>{
-      const cup=$('.cup-in',cd); if(!cup) return;
+      const cup=$('.cup-in',cd); if(!cup||cd.dataset.id==='signature-elzori') return;
       const tw=gsap.from(cup,sideVars(cup,{duration:1.2,ease:'power3.out',clearProps:'transform,opacity',scrollTrigger:{trigger:cd,start:'top 94%',once:true}}));
       if(tw.scrollTrigger) menu.trigs.push(tw.scrollTrigger);
     });
@@ -1364,7 +1364,6 @@ function buildHomeMotion(){
     $$('#bestGrid .cup-in').forEach(el=>gsap.from(el,sideVars(el,{duration:1.25,ease:'power3.out',clearProps:'transform,opacity',scrollTrigger:{trigger:'#bestGrid',start:'top 80%',once:true}})));
 
     /* Signature drinks */
-    gsap.from('.sig-hero .glass-big',{x:-Math.min(300,innerWidth*.5),rotation:-8,opacity:0,scale:.92,duration:1.3,ease:'power3.out',clearProps:'opacity,transform',scrollTrigger:{trigger:'#signature',start:'top 72%',once:true}});
     gsap.to('.sig-hero .ring.r1',{rotation:50,ease:'none',scrollTrigger:{trigger:'#signature',start:'top bottom',end:'bottom top',scrub:true}});
     gsap.to('.sig-hero .ring.r2',{rotation:-40,ease:'none',scrollTrigger:{trigger:'#signature',start:'top bottom',end:'bottom top',scrub:true}});
     gsap.from('.sig-row .thumb',{x:-110,opacity:0,stagger:.12,duration:1,ease:'power3.out',clearProps:'opacity,transform',scrollTrigger:{trigger:'#sigList',start:'top 82%',once:true}});
