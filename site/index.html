@@ -217,7 +217,7 @@ html.no-splash #splash{display:none}
 .sig-hero .ring.r1{inset:0 4% 30%;border:1px dashed var(--border)}
 .sig-hero .ring.r2{inset:8% 14% 36%;border:1px solid var(--border)}
 .sig-hero::before{content:"";position:absolute;inset:4% 8% 32%;border-radius:50%;background:radial-gradient(closest-side,rgba(200,121,58,.3),transparent 74%)}
-.glass-big{position:relative;width:min(58%,300px);aspect-ratio:3/4}
+.glass-big{position:relative;width:min(70%,340px)}
 .glass-big img,.glass-big svg{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 34px 28px var(--glass-shadow))}
 .sig-cap{position:relative;display:grid;gap:6px;justify-items:center}
 .sig-cap h3{font-size:1.7rem}
@@ -267,6 +267,10 @@ html.no-splash #splash{display:none}
 .frap-chips{display:flex;flex-wrap:wrap;gap:10px}
 .chip{padding:8px 16px;border:1px solid var(--border);border-radius:999px;font-size:.88rem}
 .glass.gH{left:-2%;top:0;width:104%;z-index:3}
+.glass.gP{left:6%;top:3%;width:88%}
+.glass.gP .floor{display:none}
+.glass.gH img.hero-photo{aspect-ratio:1080/1240;width:100%;height:auto;object-fit:cover;border-radius:28px;filter:none;box-shadow:0 44px 60px -26px rgba(0,0,0,.7),0 0 70px rgba(200,121,58,.3)}
+.glass-big img.photo{width:100%;height:auto;aspect-ratio:auto;border-radius:22px;filter:none;box-shadow:0 34px 50px -24px rgba(0,0,0,.65),0 0 50px rgba(200,121,58,.25)}
 .glass.gH img,.glass.gH svg{aspect-ratio:800/782;filter:drop-shadow(0 40px 34px var(--glass-shadow)) drop-shadow(0 0 40px rgba(200,121,58,.28))}
 .fall{position:absolute;inset:0;pointer-events:none;z-index:1}
 @media (max-width:359px){.menu-grid{grid-template-columns:1fr!important;max-width:300px!important;margin-inline:auto}}
@@ -927,7 +931,7 @@ const PRODUCTS=[
   {id:'espresso',name:'Espresso',cat:'Coffee',price:100,desc:'A concentrated, bold shot with a golden crema.',art:{t:'hot',cup:'#E0B98A',sleeve:'#C99A63',label:'Espresso'}},
   {id:'flat-white',name:'Flat White',cat:'Coffee',price:150,desc:'Creamy espresso with velvety microfoam.',art:{t:'hot',cup:'#F6EDDF',sleeve:'#DDBE93',label:'Flat White'}},
   {id:'affogato',name:'Affogato',cat:'Coffee',price:170,desc:'A scoop of vanilla gelato drowned in a fresh shot of espresso.',art:{t:'frappe',c1:'#F5E6CC',c2:'#6B3A1E',drizzle:true}},
-  {id:'signature-elzori',name:'Signature ELZORI Coffee',cat:'Coffee',price:200,desc:'Our house coffee: rich espresso, silky milk and a latte-art finish in a signature cup.',art:{t:'hot',cup:'#4A2A18',sleeve:'#2A1608',ink:'#F3E3CF',label:'ELZORI'}},
+  {id:'signature-elzori',name:'Signature ELZORI Coffee',cat:'Coffee',price:200,photo:[1080,1240],desc:'Our house coffee: rich espresso, silky milk and a latte-art finish in a signature cup.',art:{t:'hot',cup:'#4A2A18',sleeve:'#2A1608',ink:'#F3E3CF',label:'ELZORI'}},
   // Latte
   {id:'iced-caramel-latte',name:'Iced Caramel Latte',cat:'Latte',price:160,desc:'Espresso and cold milk over ice with caramel running down the glass.',art:{t:'iced',c1:'#F0D5A8',c2:'#A25F25',ice:true,straw:true}},
   {id:'vanilla-latte',name:'Vanilla Latte',cat:'Latte',price:150,desc:'Smooth espresso, milk and a soft vanilla finish with a caramel-dusted foam.',art:{t:'iced',c1:'#F4E4C4',c2:'#C79A66',ice:false}},
@@ -1268,7 +1272,7 @@ document.addEventListener('click',e=>{const l=e.target.closest('[data-cat-link]'
    ========================================================= */
 function buildStatic(){
   // hero: three individual floating glasses at different depths
-  $('#heroStage').innerHTML='<div class="fall" aria-hidden="true"></div><div class="glass gH"><div class="glass-p" data-depth="1"><div class="glass-f"><img src="images/drinks/hero-coffee.webp" alt="" width="800" height="782" fetchpriority="high" decoding="async" data-fb="d:signature-elzori"></div><span class="floor"></span></div></div>';
+  $('#heroStage').innerHTML='<div class="fall" aria-hidden="true"></div><div class="glass gH gP"><div class="glass-p" data-depth="1"><div class="glass-f"><img class="hero-photo" src="images/hero/hero-cup.webp" alt="ELZORI signature coffee: a white cup of latte with heart latte art and chocolate crumbs" width="1080" height="1240" fetchpriority="high" decoding="async" data-fb="d:signature-elzori"></div><span class="floor"></span></div></div>';
   (function(){ // falling coffee beans (static scatter; animated by GSAP when motion is allowed)
     const n=innerWidth<700?5:9; let h='';
     for(let i=0;i<n;i++){const w=16+rnd()*26;h+=`<svg class="fb" viewBox="0 0 60 90" style="left:${(4+rnd()*88).toFixed(1)}%;top:${(8+rnd()*80).toFixed(1)}%;width:${w.toFixed(0)}px;transform:rotate(${Math.round(rnd()*360)}deg)"><use href="#bean"/></svg>`}
@@ -1354,7 +1358,7 @@ function buildHomeMotion(){
       const bt=gsap.timeline({repeat:-1,delay:-Math.random()*d});
       bt.set(b,{y:-H*.12,opacity:0}).to(b,{opacity:.9,duration:.8,ease:'none'},0).to(b,{y:H*1.02,rotation:'+='+(Math.random()>.5?300:-300),duration:d,ease:'none'},0).to(b,{opacity:0,duration:.9,ease:'none'},d-.9);
     });
-    $('.glass-f').forEach((g,i)=>gsap.to(g,{y:[-16,-12,-18][i%3],rotation:[1.4,-1.2,1][i%3],duration:[3.4,2.9,3.8][i%3],yoyo:true,repeat:-1,ease:'sine.inOut'}));
+    $('.glass-f').forEach((g,i)=>gsap.to(g,{y:[-16,-12,-18][i%3],rotation:[2,-1.2,1][i%3],duration:[3.4,2.9,3.8][i%3],yoyo:true,repeat:-1,ease:'sine.inOut'}));
     gsap.to('.hero-stage',{yPercent:-7,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:true}});
     if(FINE_POINTER){
       const hero=$('.hero');
