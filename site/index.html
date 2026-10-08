@@ -196,7 +196,7 @@ html.no-splash #splash{display:none}
 .card:hover{border-color:rgba(200,121,58,.55)}
 .card:hover::before{opacity:1}
 .card-cup{position:absolute;left:0;right:0;top:-132px;display:flex;justify-content:center;pointer-events:none;z-index:2}
-.cup-in{width:150px;aspect-ratio:3/4}
+.cup-in{width:150px;--cw:150px;aspect-ratio:3/4}
 .cup-in img,.cup-in svg{display:block;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 20px 14px var(--glass-shadow))}
 .card .price{font-family:var(--font-h);font-weight:500;font-size:1.6rem;letter-spacing:.02em;color:var(--card-price)}
 .card h3{font-size:1.15rem;margin-top:6px;font-weight:600}
@@ -272,6 +272,11 @@ html.no-splash #splash{display:none}
 @media (max-width:359px){.menu-grid{grid-template-columns:1fr!important;max-width:300px!important;margin-inline:auto}}
 .fb{position:absolute;height:auto;color:var(--fall-bean);will-change:transform}
 .cup-in--wide{width:190px;aspect-ratio:9/7;margin-top:50px}
+.cup-in{display:grid;place-items:center}
+.cup-in img.photo{width:auto;height:auto;max-width:var(--cw);max-height:calc(var(--cw)*1.3334);aspect-ratio:auto;border-radius:14px;filter:none;box-shadow:0 16px 28px -10px rgba(0,0,0,.6)}
+.p-art img.photo{width:auto;height:auto;max-width:92%;max-height:92%;aspect-ratio:auto;border-radius:12px;filter:none}
+.line .thumb img.photo{width:auto;height:auto;max-width:100%;max-height:100%;border-radius:8px}
+.fly img.photo{border-radius:6px;filter:none}
 .line .thumb img{width:100%;height:100%;object-fit:contain}
 .fly img{width:100%;height:auto;filter:drop-shadow(0 6px 6px rgba(0,0,0,.35))}
 .p-art img{width:86%;aspect-ratio:9/7}
@@ -530,14 +535,14 @@ img[data-fb][data-ok]{opacity:1}
   .menu-grid{grid-template-columns:repeat(2,minmax(0,1fr));max-width:none;gap:16px 12px}
   .menu-grid .card{margin-top:98px;padding:80px 10px 14px;border-radius:20px}
   .menu-grid .card-cup{top:-104px}
-  .menu-grid .cup-in{width:112px}
+  .menu-grid .cup-in{width:112px;--cw:112px}
   .menu-grid .cup-in--wide{width:142px;margin-top:38px}
   .menu-grid .card .price{font-size:1.25rem}
   .menu-grid .card h3{font-size:.98rem}
   .menu-grid .card .desc{font-size:.8rem;min-height:0;margin:6px auto 12px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
   .menu-grid .add{width:100%;justify-content:center;padding:0 8px;font-size:.8rem}
   .foot-grid{grid-template-columns:1fr}
-  .cup-in{width:116px}
+  .cup-in{width:116px;--cw:116px}
   .line{grid-template-columns:56px 1fr auto;gap:10px}
 }
 @media (hover:none){ .btn:hover,.icon-btn:hover{transform:none;box-shadow:none} }
@@ -915,10 +920,10 @@ let seed=7; const rnd=()=>{seed=(seed*16807)%2147483647;return (seed-1)/21474836
 const PRODUCTS=[
   // Coffee
   {id:'caramel-macchiato',name:'Caramel Macchiato',cat:'Coffee',price:150,desc:'Espresso, steamed milk and a ribbon of caramel, served iced and layered.',art:{t:'iced',c1:'#F0D5A8',c2:'#6B3A1E',ice:true}},
-  {id:'iced-americano',name:'Iced Americano',cat:'Coffee',price:130,desc:'Double espresso over ice and cold water, clean and bright.',art:{t:'iced',c1:'#5A3420',c2:'#2B140A',ice:true}},
+  {id:'iced-americano',name:'Iced Americano',cat:'Coffee',price:130,photo:[800,1200],desc:'Double espresso over ice and cold water, clean and bright.',art:{t:'iced',c1:'#5A3420',c2:'#2B140A',ice:true}},
   {id:'cappuccino',name:'Cappuccino',cat:'Coffee',price:150,desc:'Espresso with steamed milk and a rich layer of milk foam.',art:{t:'hot',cup:'#F1E1CC',label:''}},
   {id:'cafe-mocha',name:'Café Mocha',cat:'Coffee',price:160,desc:'Espresso and chocolate with steamed milk, whipped cream and a chocolate drizzle.',art:{t:'frappe',c1:'#9A6A48',c2:'#5A3220',drizzle:true}},
-  {id:'cold-brew',name:'Cold Brew',cat:'Coffee',price:145,desc:'Slowly steeped coffee served chilled over ice.',art:{t:'iced',c1:'#2B140A',c2:'#3F2112',ice:true}},
+  {id:'cold-brew',name:'Cold Brew',cat:'Coffee',price:145,photo:[655,1200],desc:'Slowly steeped coffee served chilled over ice.',art:{t:'iced',c1:'#2B140A',c2:'#3F2112',ice:true}},
   {id:'espresso',name:'Espresso',cat:'Coffee',price:100,desc:'A concentrated, bold shot with a golden crema.',art:{t:'hot',cup:'#E0B98A',sleeve:'#C99A63',label:'Espresso'}},
   {id:'flat-white',name:'Flat White',cat:'Coffee',price:150,desc:'Creamy espresso with velvety microfoam.',art:{t:'hot',cup:'#F6EDDF',sleeve:'#DDBE93',label:'Flat White'}},
   {id:'affogato',name:'Affogato',cat:'Coffee',price:170,desc:'A scoop of vanilla gelato drowned in a fresh shot of espresso.',art:{t:'frappe',c1:'#F5E6CC',c2:'#6B3A1E',drizzle:true}},
@@ -929,20 +934,20 @@ const PRODUCTS=[
   {id:'spanish-latte',name:'Spanish Latte',cat:'Latte',price:170,desc:'Espresso with milk and sweetened condensed milk, topped with cream.',art:{t:'iced',c1:'#F2DDB7',c2:'#6B3A1E',ice:false}},
   {id:'white-chocolate-mocha',name:'White Chocolate Mocha',cat:'Latte',price:175,desc:'Espresso, steamed milk and creamy white chocolate under whipped cream.',art:{t:'frappe',c1:'#F7EAD2',c2:'#A9794A',drizzle:false}},
   // Frappe
-  {id:'chocolate-frappe',name:'Chocolate Frappe',cat:'Frappe',price:190,desc:'Blended dark chocolate and milk, topped with whipped cream and a chocolate drizzle.',art:{t:'frappe',c1:'#7B4A33',c2:'#3E2417',drizzle:true}},
+  {id:'chocolate-frappe',name:'Chocolate Frappe',cat:'Frappe',price:190,photo:[533,799],desc:'Blended dark chocolate and milk, topped with whipped cream and a chocolate drizzle.',art:{t:'frappe',c1:'#7B4A33',c2:'#3E2417',drizzle:true}},
   {id:'caramel-frappe',name:'Caramel Frappe',cat:'Frappe',price:190,desc:'Icy blended coffee with whipped cream and ribbons of caramel.',art:{t:'frappe',c1:'#E3B073',c2:'#B87A38',drizzle:true}},
-  {id:'strawberry-frappe',name:'Strawberry Frappe',cat:'Frappe',price:190,desc:'Blended strawberries and cream, topped with whipped cream and strawberry sauce.',art:{t:'frappe',c1:'#F9D4DA',c2:'#E27A92',straw:true}},
+  {id:'strawberry-frappe',name:'Strawberry Frappe',cat:'Frappe',price:190,photo:[736,993],desc:'Blended strawberries and cream, topped with whipped cream and strawberry sauce.',art:{t:'frappe',c1:'#F9D4DA',c2:'#E27A92',straw:true}},
   // Non-coffee
   {id:'matcha-latte',name:'Matcha Latte',cat:'Non-Coffee',price:180,desc:'Whisked matcha and fresh milk poured over ice.',art:{t:'iced',c1:'#C9DDA0',c2:'#6F9441',ice:true}},
   {id:'iced-matcha',name:'Iced Matcha',cat:'Non-Coffee',price:180,desc:'Layered matcha and milk with clear ice, earthy and refreshing.',art:{t:'iced',c1:'#D4E3B0',c2:'#7C9A4E',ice:true}},
-  {id:'strawberry-milk',name:'Strawberry Milk',cat:'Non-Coffee',price:160,desc:'Fresh milk with a sweet strawberry swirl, finished with a strawberry.',art:{t:'iced',c1:'#FBDCE0',c2:'#E98CA0',ice:true}},
+  {id:'strawberry-milk',name:'Strawberry Milk',cat:'Non-Coffee',price:160,photo:[985,1200],desc:'Fresh milk with a sweet strawberry swirl, finished with a strawberry.',art:{t:'iced',c1:'#FBDCE0',c2:'#E98CA0',ice:true}},
   // Pastries
   {id:'croissant',name:'Croissant',cat:'Pastries',price:110,desc:'Flaky, golden layers baked with real butter.',art:{t:'pastry',k:'croissant'}},
-  {id:'chocolate-croissant',name:'Chocolate Croissant',cat:'Pastries',price:130,desc:'Buttery pastry wrapped around dark chocolate.',art:{t:'pastry',k:'croissant'}},
-  {id:'red-velvet-cake',name:'Red Velvet Cake',cat:'Pastries',price:160,desc:'Soft red velvet layers with cream cheese frosting.',art:{t:'pastry',k:'cake'}},
-  {id:'blueberry-cheesecake',name:'Blueberry Cheesecake',cat:'Pastries',price:170,desc:'Creamy cheesecake on a biscuit base with blueberry compote.',art:{t:'pastry',k:'cake'}},
-  {id:'cinnamon-roll',name:'Cinnamon Roll',cat:'Pastries',price:120,desc:'Warm swirled dough with cinnamon and glaze.',art:{t:'pastry',k:'roll'}},
-  {id:'fruit-danish',name:'Fruit Danish',cat:'Pastries',price:140,desc:'Laminated pastry with custard and fresh berries.',art:{t:'pastry',k:'roll'}}
+  {id:'chocolate-croissant',name:'Chocolate Croissant',cat:'Pastries',price:130,photo:[1080,1080],desc:'Buttery pastry wrapped around dark chocolate.',art:{t:'pastry',k:'croissant'}},
+  {id:'red-velvet-cake',name:'Red Velvet Cake',cat:'Pastries',price:160,photo:[960,1200],desc:'Soft red velvet layers with cream cheese frosting.',art:{t:'pastry',k:'cake'}},
+  {id:'blueberry-cheesecake',name:'Blueberry Cheesecake',cat:'Pastries',price:170,photo:[673,1200],desc:'Creamy cheesecake on a biscuit base with blueberry compote.',art:{t:'pastry',k:'cake'}},
+  {id:'cinnamon-roll',name:'Cinnamon Roll',cat:'Pastries',price:120,photo:[675,1200],desc:'Warm swirled dough with cinnamon and glaze.',art:{t:'pastry',k:'roll'}},
+  {id:'fruit-danish',name:'Fruit Danish',cat:'Pastries',price:140,photo:[736,1104],desc:'Laminated pastry with custard and fresh berries.',art:{t:'pastry',k:'roll'}}
 ];
 const BEST_IDS=['caramel-macchiato','iced-americano','cappuccino'];
 const CATS=['Coffee','Latte','Frappe','Non-Coffee','Pastries'];
@@ -1175,8 +1180,9 @@ document.addEventListener('click',e=>{
 const ICON_PLUS='<svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1v12M1 7h12"/></svg>';
 /* Product photos live in images/drinks/<id>.webp (transparent, 3:4). If a file is missing the card falls back to the built-in vector art, so nothing breaks. */
 window.ELZORI_MISSING_IMAGES=[];
-function drinkMedia(p,eager){
+function drinkMedia(p,eager,cut){
   const pastry=p.cat==='Pastries';
+  if(p.photo&&!cut) return `<img class="photo" src="images/products/${p.id}.webp" alt="${esc(p.name)}" width="${p.photo[0]}" height="${p.photo[1]}" ${eager?'fetchpriority="high"':'loading="lazy"'} decoding="async" data-fb="d:${p.id}">`;
   return `<img src="images/${pastry?'pastries':'drinks'}/${p.id}.webp" alt="${esc(p.name)}" width="${pastry?720:600}" height="${pastry?560:800}" ${eager?'fetchpriority="high"':'loading="lazy"'} decoding="async" data-fb="d:${p.id}">`;
 }
 document.addEventListener('error',e=>{
@@ -1188,7 +1194,7 @@ document.addEventListener('error',e=>{
 },true);
 document.addEventListener('load',e=>{const t=e.target;if(t instanceof HTMLImageElement&&t.dataset.fb) t.dataset.ok='1'},true);
 function cardHTML(p,alt){
-  return `<article class="card${alt?' card--alt':''}" data-id="${p.id}"><div class="card-cup"><div class="cup-in${p.cat==='Pastries'?' cup-in--wide':''}">${drinkMedia(p)}</div></div>
+  return `<article class="card${alt?' card--alt':''}" data-id="${p.id}"><div class="card-cup"><div class="cup-in${p.cat==='Pastries'&&!p.photo?' cup-in--wide':''}">${drinkMedia(p)}</div></div>
     <p class="price">${peso(p.price)}</p><h3>${esc(p.name)}</h3><p class="desc">${esc(p.desc)}</p>
     <button class="add" type="button" data-add="${p.id}" aria-label="Add ${esc(p.name)} to cart">${ICON_PLUS}<span class="lbl">Add to cart</span></button></article>`;
 }
@@ -1279,10 +1285,10 @@ function buildStatic(){
       <div class="sig-buy"><b class="price">${peso(sig.price)}</b><button class="add" type="button" data-add="${sig.id}" aria-label="Add ${esc(sig.name)} to cart">${ICON_PLUS}<span class="lbl">Add to cart</span></button></div></div>`;
   $('#sigList').innerHTML=['iced-caramel-latte','white-chocolate-mocha','spanish-latte','affogato'].map(id=>{const p=byId(id);return `<div class="sig-row"><div class="thumb">${drinkMedia(p)}</div><div><h3>${esc(p.name)}</h3><p>${esc(p.desc)}</p></div><div class="sig-end"><b class="price">${peso(p.price)}</b><button class="add" type="button" data-add="${p.id}" aria-label="Add ${esc(p.name)} to cart">${ICON_PLUS}<span class="lbl">Add</span></button></div></div>`}).join('');
   // iced glassware showcase
-  $('#icedStage').innerHTML=['iced-matcha','cold-brew','strawberry-milk'].map(id=>{const p=byId(id);return `<figure class="ig">${drinkMedia(p)}<figcaption>${esc(p.name)}</figcaption></figure>`}).join('')+
+  $('#icedStage').innerHTML=['iced-matcha','cold-brew','strawberry-milk'].map(id=>{const p=byId(id);return `<figure class="ig">${drinkMedia(p,false,true)}<figcaption>${esc(p.name)}</figcaption></figure>`}).join('')+
     '<span class="callout c1">Clear ice</span><span class="callout c2">Layered pour</span>';
   // frappe & specialty
-  $('#frapVisual').innerHTML=['strawberry-frappe','caramel-frappe','chocolate-frappe'].map(id=>`<div class="fg">${drinkMedia(byId(id))}</div>`).join('');
+  $('#frapVisual').innerHTML=['strawberry-frappe','caramel-frappe','chocolate-frappe'].map(id=>`<div class="fg">${drinkMedia(byId(id),false,true)}</div>`).join('');
   // ground pile
   let dots=''; for(let i=0;i<110;i++){const y=210-rnd()*120, half=(y-90)*.62+6, x=120+(rnd()*2-1)*Math.min(half,86); dots+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(2.6+rnd()*3.6).toFixed(1)}" fill="${['#4A2813','#5C3319','#3A1E0E','#6B3F20'][i%4]}"/>`}
   $('#pileDots').innerHTML=dots;
