@@ -179,7 +179,7 @@ html.no-splash #splash{display:none}
 .hero-copy .lead{margin-top:18px;max-width:42ch;font-size:clamp(1rem,1.4vw,1.12rem);color:var(--muted)}
 .hero-cta{display:flex;gap:14px;flex-wrap:wrap;margin-top:30px}
 .hero-stage{position:relative;aspect-ratio:1/.98;width:100%;max-width:720px;margin-inline:auto}
-.hero-stage::before{content:"";position:absolute;inset:4% 0 8%;border-radius:50%;background:radial-gradient(closest-side,rgba(200,121,58,.34),rgba(200,121,58,.08) 60%,transparent 74%)}
+.hero-stage::before{display:none;content:"";position:absolute;inset:4% 0 8%;border-radius:50%;background:radial-gradient(closest-side,rgba(200,121,58,.34),rgba(200,121,58,.08) 60%,transparent 74%)}
 .glass{position:absolute}
 .glass-p,.glass-f{position:relative;width:100%}
 .glass img,.glass svg{display:block;width:100%;height:auto;aspect-ratio:3/4;object-fit:contain;filter:drop-shadow(0 32px 26px var(--glass-shadow))}
@@ -300,7 +300,7 @@ img[data-fb][data-ok]{opacity:1}
   .frap-visual{min-height:420px}
 }
 @media (max-width:899px){
-  .hero-stage{max-width:460px}
+  .hero-stage{display:none}
   .nav.scrolled{background:var(--nav-bg-solid);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
   .callout{display:none}
   .card{margin-top:124px}
@@ -327,6 +327,7 @@ img[data-fb][data-ok]{opacity:1}
 .stage{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.1fr);border-radius:var(--r-lg);overflow:hidden;background:var(--panel);border:1px solid var(--border);box-shadow:var(--shadow)}
 .stage-v{position:relative;background:radial-gradient(70% 70% at 40% 40%,#F8ECDC,var(--visual-bg));display:grid;place-items:center;min-height:320px;overflow:hidden}
 .stage-v svg{width:min(78%,360px);height:auto}
+.stage-v img.story-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
 .stage-t{padding:clamp(28px,4.5vw,64px);display:flex;flex-direction:column;justify-content:center;gap:16px}
 .stage-t .num{font-family:var(--font-h);font-size:.95rem;color:var(--accent-text);letter-spacing:.2em}
 .stage-t h3{font-size:clamp(1.5rem,2.6vw,2.2rem)}
@@ -697,31 +698,15 @@ img[data-fb][data-ok]{opacity:1}
       <div class="section-head"><span class="eyebrow">Our service · From bean to cup</span><h2 id="storyTitle">Three steps to the perfect cup</h2></div>
       <div class="story-panel" id="storyPanel">
         <article class="stage" data-stage="0">
-          <div class="stage-v">
-            <svg viewBox="0 0 240 240" aria-hidden="true">
-              <g class="aroma" fill="none" stroke="#B5651D" stroke-width="3" stroke-linecap="round" opacity=".55"><path d="M60 70C48 56 70 46 58 30"/><path d="M180 66C168 52 190 42 178 26"/></g>
-              <g class="bean-big" style="transform-origin:120px 120px;transform:rotate(-18deg)"><use href="#bean" x="64" y="30" width="112" height="168" style="color:#3D2112"/></g>
-              <ellipse cx="120" cy="214" rx="56" ry="6" fill="#000" opacity=".15"/>
-            </svg>
-          </div>
+          <div class="stage-v"><img class="story-photo" src="images/story/bean.webp" alt="Roasted coffee beans falling onto freshly ground coffee" width="750" height="1332" loading="lazy" decoding="async"></div>
           <div class="stage-t"><span class="num">01 / 03</span><h3><em>The Coffee Bean</em> — where aroma begins</h3><p>Every ELZORI cup starts with a single bean: dark, glossy and full of promise. Its aroma — cocoa, caramel, a hint of fruit — sets the character of everything that follows.</p></div>
         </article>
         <article class="stage" data-stage="1">
-          <div class="stage-v">
-            <svg viewBox="0 0 240 240" aria-hidden="true">
-              <g class="pile" style="transform-box:fill-box;transform-origin:50% 100%" id="pileDots"></g>
-              <ellipse cx="120" cy="214" rx="86" ry="7" fill="#000" opacity=".15"/>
-            </svg>
-          </div>
+          <div class="stage-v"><img class="story-photo" src="images/story/ground.webp" alt="Freshly ground coffee with roasted beans" width="1000" height="1500" loading="lazy" decoding="async"></div>
           <div class="stage-t"><span class="num">02 / 03</span><h3><em>Freshly Ground</em> — prepared with care</h3><p>Beans are ground just before brewing and dosed with precision. A fresh, even grind unlocks the sweetness and body that make a cup feel rounded rather than sharp.</p></div>
         </article>
         <article class="stage" data-stage="2">
-          <div class="stage-v">
-            <svg viewBox="0 0 240 240" aria-hidden="true">
-              <path class="stream" d="M120 6C120 60 120 90 120 128" fill="none" stroke="#6B3A1E" stroke-width="7" stroke-linecap="round" pathLength="1"/>
-              <g id="brewCup" transform="translate(60 70) scale(1)"></g>
-            </svg>
-          </div>
+          <div class="stage-v"><img class="story-photo" src="images/story/brewed.webp" alt="A freshly brewed latte with heart latte art in a white cup" width="1080" height="1240" loading="lazy" decoding="async"></div>
           <div class="stage-t"><span class="num">03 / 03</span><h3><em>Freshly Brewed</em> — poured for you</h3><p>The finished coffee meets the cup: warm, balanced and unhurried. This is the café moment — a slow sip, good company, and a different kind of coffee.</p></div>
         </article>
         <div class="story-steps" aria-hidden="true"><i class="on"></i><i></i><i></i></div>
@@ -946,7 +931,7 @@ const PRODUCTS=[
   {id:'iced-matcha',name:'Iced Matcha',cat:'Non-Coffee',price:180,desc:'Layered matcha and milk with clear ice, earthy and refreshing.',art:{t:'iced',c1:'#D4E3B0',c2:'#7C9A4E',ice:true}},
   {id:'strawberry-milk',name:'Strawberry Milk',cat:'Non-Coffee',price:160,photo:[985,1200],desc:'Fresh milk with a sweet strawberry swirl, finished with a strawberry.',art:{t:'iced',c1:'#FBDCE0',c2:'#E98CA0',ice:true}},
   // Pastries
-  {id:'croissant',name:'Croissant',cat:'Pastries',price:110,desc:'Flaky, golden layers baked with real butter.',art:{t:'pastry',k:'croissant'}},
+  {id:'croissant',name:'Croissant',cat:'Pastries',price:110,photo:[900,1200],desc:'Flaky, golden layers baked with real butter.',art:{t:'pastry',k:'croissant'}},
   {id:'chocolate-croissant',name:'Chocolate Croissant',cat:'Pastries',price:130,photo:[1080,1080],desc:'Buttery pastry wrapped around dark chocolate.',art:{t:'pastry',k:'croissant'}},
   {id:'red-velvet-cake',name:'Red Velvet Cake',cat:'Pastries',price:160,photo:[960,1200],desc:'Soft red velvet layers with cream cheese frosting.',art:{t:'pastry',k:'cake'}},
   {id:'blueberry-cheesecake',name:'Blueberry Cheesecake',cat:'Pastries',price:170,photo:[673,1200],desc:'Creamy cheesecake on a biscuit base with blueberry compote.',art:{t:'pastry',k:'cake'}},
@@ -1272,12 +1257,8 @@ document.addEventListener('click',e=>{const l=e.target.closest('[data-cat-link]'
    ========================================================= */
 function buildStatic(){
   // hero: three individual floating glasses at different depths
-  $('#heroStage').innerHTML='<div class="fall" aria-hidden="true"></div><div class="glass gH gP"><div class="glass-p" data-depth="1"><div class="glass-f"><img class="hero-photo" src="images/hero/hero-cup.webp" alt="ELZORI signature coffee: a white cup of latte with heart latte art and chocolate crumbs" width="1080" height="1240" fetchpriority="high" decoding="async" data-fb="d:signature-elzori"></div><span class="floor"></span></div></div>';
-  (function(){ // falling coffee beans (static scatter; animated by GSAP when motion is allowed)
-    const n=innerWidth<700?5:9; let h='';
-    for(let i=0;i<n;i++){const w=16+rnd()*26;h+=`<svg class="fb" viewBox="0 0 60 90" style="left:${(4+rnd()*88).toFixed(1)}%;top:${(8+rnd()*80).toFixed(1)}%;width:${w.toFixed(0)}px;transform:rotate(${Math.round(rnd()*360)}deg)"><use href="#bean"/></svg>`}
-    $('#heroStage .fall').innerHTML=h;
-  })();
+  // hero right side intentionally left empty (reserved for a future image)
+  $('#heroStage').innerHTML='';
   // best sellers
   $('#bestGrid').innerHTML=BEST_IDS.map((id,i)=>cardHTML(byId(id),i===1)).join('');
   $$('#bestGrid .card').forEach(bindTilt);
@@ -1293,11 +1274,6 @@ function buildStatic(){
     '<span class="callout c1">Clear ice</span><span class="callout c2">Layered pour</span>';
   // frappe & specialty
   $('#frapVisual').innerHTML=['strawberry-frappe','caramel-frappe','chocolate-frappe'].map(id=>`<div class="fg">${drinkMedia(byId(id),false,true)}</div>`).join('');
-  // ground pile
-  let dots=''; for(let i=0;i<110;i++){const y=210-rnd()*120, half=(y-90)*.62+6, x=120+(rnd()*2-1)*Math.min(half,86); dots+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(2.6+rnd()*3.6).toFixed(1)}" fill="${['#4A2813','#5C3319','#3A1E0E','#6B3F20'][i%4]}"/>`}
-  $('#pileDots').innerHTML=dots;
-  $('#brewCup').innerHTML=cupSVG({t:'hot',cup:'#FBF6EE',sleeve:'#B98657',label:'Elzori',ink:'#FFF4E3'}).replace('<svg ','<svg width="120" height="172" ');
-  $('#brewCup').setAttribute('transform','translate(60 66) scale(1)');
   // latte art: nested hearts + pour line
   const heart='M200 292C128 246 110 176 156 158C182 148 200 168 200 186C200 168 218 148 244 158C290 176 272 246 200 292Z';
   const sc=[1,.76,.54,.34]; let la='';
@@ -1345,20 +1321,19 @@ function buildHomeMotion(){
         .from('.hero-brand .ch',{yPercent:120,opacity:0,duration:1,stagger:.07,ease:'power4.out'},.1)
         .from('.hero-headline',{opacity:0,y:26,duration:.9},.65)
         .from('.hero .lead',{opacity:0,y:20,duration:.8},.85)
-        .from('.hero-cta .btn',{opacity:0,y:20,scale:.94,stagger:.1,duration:.7},1)
-        .from('.glass',{y:170,opacity:0,scale:.86,duration:1.3,stagger:.16,ease:'power3.out'},.2);
+        .from('.hero-cta .btn',{opacity:0,y:20,scale:.94,stagger:.1,duration:.7},1);
       splashDone.then(()=>{tl.play();heroPlayed=true});
     }
     $$('.hero .bean-layer').forEach(l=>{
       const d=+l.dataset.depth;
       gsap.to(l,{yPercent:-12*d,rotation:d*4,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:true}});
     });
-    $('#heroStage .fb').forEach(b=>{ // controlled bean fall: loops slowly behind the glass
+    $$('#heroStage .fb').forEach(b=>{ // controlled bean fall: loops slowly behind the glass
       const H=$('#heroStage').offsetHeight, d=7+Math.random()*5;
       const bt=gsap.timeline({repeat:-1,delay:-Math.random()*d});
       bt.set(b,{y:-H*.12,opacity:0}).to(b,{opacity:.9,duration:.8,ease:'none'},0).to(b,{y:H*1.02,rotation:'+='+(Math.random()>.5?300:-300),duration:d,ease:'none'},0).to(b,{opacity:0,duration:.9,ease:'none'},d-.9);
     });
-    $('.glass-f').forEach((g,i)=>gsap.to(g,{y:[-16,-12,-18][i%3],rotation:[2,-1.2,1][i%3],duration:[3.4,2.9,3.8][i%3],yoyo:true,repeat:-1,ease:'sine.inOut'}));
+    $$('.glass-f').forEach((g,i)=>gsap.to(g,{y:[-16,-12,-18][i%3],rotation:[2,-1.2,1][i%3],duration:[3.4,2.9,3.8][i%3],yoyo:true,repeat:-1,ease:'sine.inOut'}));
     gsap.to('.hero-stage',{yPercent:-7,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:true}});
     if(FINE_POINTER){
       const hero=$('.hero');
@@ -1398,18 +1373,16 @@ function buildHomeMotion(){
       gsap.set(stages.slice(1),{autoAlpha:0});
       const st=gsap.timeline({defaults:{ease:'none'},scrollTrigger:{trigger:wrap,start:'top top',end:'+=280%',pin:true,scrub:.6,anticipatePin:1,
         onUpdate:s=>{const i=Math.min(2,Math.floor(s.progress*3)); steps.forEach((x,k)=>x.classList.toggle('on',k===i))}}});
-      st.to('.bean-big',{rotation:18,scale:1.12,duration:1},0)
-        .to('.aroma',{y:-16,opacity:.9,duration:1},0)
+      st.fromTo('.stage[data-stage="0"] .story-photo',{scale:1.14},{scale:1,duration:1},0)
         .to(stages[0],{autoAlpha:0,x:-40,duration:.4},1)
         .fromTo(stages[1],{autoAlpha:0,x:40},{autoAlpha:1,x:0,duration:.4},1)
-        .fromTo('.pile',{scaleY:.05,scaleX:.6,opacity:.2},{scaleY:1,scaleX:1,opacity:1,duration:.9},1.1)
+        .fromTo('.stage[data-stage="1"] .story-photo',{scale:1.14},{scale:1,duration:1},1)
         .to(stages[1],{autoAlpha:0,x:-40,duration:.4},2)
         .fromTo(stages[2],{autoAlpha:0,x:40},{autoAlpha:1,x:0,duration:.4},2)
-        .fromTo('.stream',{strokeDasharray:1,strokeDashoffset:1},{strokeDashoffset:0,duration:.8},2.1)
+        .fromTo('.stage[data-stage="2"] .story-photo',{scale:1.14},{scale:1,duration:1},2)
         .to({},{duration:.3});
     } else {
       stages.forEach(s=>gsap.from(s,{y:50,opacity:0,duration:.8,ease:'power3.out',clearProps:'opacity,transform',scrollTrigger:{trigger:s,start:'top 88%',once:true}}));
-      gsap.fromTo('.stream',{strokeDasharray:1,strokeDashoffset:1},{strokeDashoffset:0,duration:1.4,scrollTrigger:{trigger:'.stream',start:'top 85%',once:true}});
     }
 
     /* Latte art: stroke draw */
