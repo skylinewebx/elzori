@@ -182,7 +182,10 @@ html.no-splash #splash{display:none}
 /* hero visual: the supplied cups-and-splash render, dissolved into the dark hero (scoped to .hero-stage) */
 .hero-stage{position:absolute;right:calc(var(--gutter) * -.5);top:50%;translate:0 -50%;width:min(44vw,600px);aspect-ratio:660/848;z-index:1;pointer-events:none}
 .hero-plate{width:100%;height:100%;-webkit-mask-image:linear-gradient(to right,transparent 0,#000 16%,#000 84%,transparent 100%),linear-gradient(to bottom,transparent 0,#000 14%,#000 86%,transparent 100%);-webkit-mask-composite:source-in;mask-image:linear-gradient(to right,transparent 0,#000 16%,#000 84%,transparent 100%),linear-gradient(to bottom,transparent 0,#000 14%,#000 86%,transparent 100%);mask-composite:intersect}
-.hero-plate img{display:block;width:100%;height:100%;object-fit:contain}
+.hp-inner{position:relative;width:100%;height:100%}
+.hero-plate img.hp-base{display:block;width:100%;height:100%;object-fit:contain}
+.hero-plate img.hp-layer{position:absolute;display:block;max-width:none;object-fit:fill;pointer-events:none}
+.hp-patch,.hp-sprite{opacity:0}
 :root[data-elz="light"] .hero-plate{-webkit-mask-image:none;mask-image:none;border-radius:30px;overflow:hidden;box-shadow:0 40px 70px -30px rgba(74,40,14,.55)}
 .hero-stage::before{display:none;content:"";position:absolute;inset:4% 0 8%;border-radius:50%;background:radial-gradient(closest-side,rgba(200,121,58,.34),rgba(200,121,58,.08) 60%,transparent 74%)}
 .glass{position:absolute}
@@ -1274,7 +1277,9 @@ document.addEventListener('click',e=>{const l=e.target.closest('[data-cat-link]'
    ========================================================= */
 function buildStatic(){
   // hero: three individual floating glasses at different depths
-  $('#heroStage').innerHTML='<div class="hero-plate"><img src="images/hero/hero-plate.webp" alt="Two ELZORI takeaway coffee cups with the lid lifting and coffee splashing" width="660" height="848" fetchpriority="high" decoding="async" onerror="this.remove()"></div>';
+  const HL={patch:[129,0,483,352],lid:[138,26,269,194],crown:[166,23,444,327],dropL:[139,0,96,321],dropM:[258,60,201,181],dropR:[447,0,158,262]};
+  const hl=(n,cls)=>{const b=HL[n];return `<img class="hp-layer ${cls}" data-n="${n}" src="images/hero/layer-${n}.webp" alt="" aria-hidden="true" width="${b[2]}" height="${b[3]}" decoding="async" style="left:${(b[0]/660*100).toFixed(3)}%;top:${(b[1]/848*100).toFixed(3)}%;width:${(b[2]/660*100).toFixed(3)}%;height:${(b[3]/848*100).toFixed(3)}%" onerror="this.remove()">`};
+  $('#heroStage').innerHTML='<div class="hero-plate"><div class="hp-inner"><img class="hp-base" src="images/hero/hero-plate.webp" alt="Two ELZORI takeaway coffee cups with the lid lifting and coffee splashing" width="660" height="848" fetchpriority="high" decoding="async" onerror="this.remove()">'+hl('patch','hp-patch')+hl('lid','hp-sprite hp-lid')+hl('crown','hp-sprite hp-crown')+hl('dropL','hp-sprite hp-drop')+hl('dropM','hp-sprite hp-drop')+hl('dropR','hp-sprite hp-drop')+'</div></div>';
   // best sellers
   $('#bestGrid').innerHTML=BEST_IDS.map((id,i)=>cardHTML(byId(id),i===1)).join('');
   $$('#bestGrid .card').forEach(bindTilt);
@@ -1319,28 +1324,58 @@ function buildStatic(){
    ========================================================= */
 let lenis=null, splashDone=Promise.resolve(), heroPlayed=false, cupsIntroDone=false;
 
-/* ---- Hero: supplied cups-and-splash render with a soft entrance, float, pointer + scroll depth ---- */
+/* ---- Hero: supplied cups-and-splash render, split into layers so the lid lifts and the coffee bursts out ---- */
 function heroPlate(cleanups){
-  const stage=$('#heroStage'), plate=$('.hero-plate'), img=$('.hero-plate img'), hero=$('.hero');
-  if(!stage||!plate||!img) return;
+  const stage=$('#heroStage'), plate=$('.hero-plate'), inner=$('.hp-inner'), hero=$('.hero');
+  if(!stage||!plate||!inner) return;
   const H=()=>hero.offsetHeight;
+  const L=n=>$('.hp-layer[data-n="'+n+'"]');
+  const patch=L('patch'), lid=L('lid'), crown=L('crown'), drops=['dropL','dropM','dropR'].map(L).filter(Boolean);
+  const MOUTH={x:372,y:300}, BOX={crown:[166,23,444,327],dropL:[139,0,96,321],dropM:[258,60,201,181],dropR:[447,0,158,262]};
+  const org=n=>((MOUTH.x-BOX[n][0])/BOX[n][2]*100).toFixed(1)+'% '+((MOUTH.y-BOX[n][1])/BOX[n][3]*100).toFixed(1)+'%';
+  /* A) entrance (plays once) */
   const E=gsap.timeline({paused:true});
-  E.fromTo(plate,{y:80,opacity:0,scale:.94},{y:0,opacity:1,scale:1,duration:1.7,ease:'power3.out'},0);
-  if(cupsIntroDone) E.progress(1);
-  else splashDone.then(()=>{ E.play(); E.eventCallback('onComplete',()=>{ cupsIntroDone=true; }); });
-  gsap.to(img,{y:-12,rotation:.7,duration:4.2,yoyo:true,repeat:-1,ease:'sine.inOut'});
+  E.fromTo(plate,{y:80,opacity:0,scale:.94},{y:0,opacity:1,scale:1,duration:1.6,ease:'power3.out'},0);
+  /* B) lid lift + splash: closed (t=0) -> settled = the original photo (t=end) */
+  const T=gsap.timeline({paused:true,defaults:{ease:'none'}});
+  const layers=[patch,lid,crown,...drops].filter(Boolean);
+  gsap.set(layers,{opacity:1});
+  if(crown) gsap.set(crown,{transformOrigin:org('crown')});
+  drops.forEach(d=>gsap.set(d,{transformOrigin:org(d.dataset.n)}));
+  if(lid) T.fromTo(lid,{xPercent:35.5,yPercent:93.8,rotation:15,scale:.95,transformOrigin:'50% 50%'},{xPercent:-8,yPercent:-12,rotation:-7,scale:1.03,duration:.6,ease:'power3.out'},.25)
+           .to(lid,{xPercent:0,yPercent:0,rotation:0,scale:1,duration:.95,ease:'sine.inOut'},.85);
+  if(crown) T.fromTo(crown,{scale:.04,opacity:0},{scale:1.1,opacity:1,duration:.55,ease:'power3.out'},.4)
+            .to(crown,{scale:1,duration:.75,ease:'sine.inOut'},.95);
+  drops.forEach((d,i)=>{
+    const t=.5+i*.1;
+    T.fromTo(d,{scale:.05,opacity:0,yPercent:0},{scale:1.2,opacity:1,yPercent:-4,duration:.8,ease:'power2.out'},t)
+     .to(d,{scale:1,yPercent:0,duration:1,ease:'power2.inOut'},t+.8);
+  });
+  if(patch) T.to(patch,{opacity:0,duration:.6},2.1);
+  const settle=T.duration();
+  let introDone=cupsIntroDone;
+  /* C) scroll: play B backwards (droplets return, lid closes), then fade the scene as the hero leaves */
+  const sync=p=>{ if(introDone&&!(window.__hc&&window.__hc.hold)) T.time(settle*(1-Math.min(1,p/.78))); };
+  const stacked=getComputedStyle(stage).position!=='absolute'; // phones: the render sits below the copy
+  const drift=stacked?{trigger:stage,start:'top bottom',end:'bottom top',scrub:true}:{trigger:hero,start:'top top',end:'bottom top',scrub:true};
+  const closing=stacked?{trigger:hero,start:'top top',end:()=>'+='+Math.max(240,stage.getBoundingClientRect().top+scrollY-hero.getBoundingClientRect().top-scrollY+stage.offsetHeight*.5-innerHeight*.25)}:{trigger:hero,start:'top top',end:()=>'+='+H()*.7};
+  const st=ScrollTrigger.create(Object.assign({},closing,{onUpdate:self=>sync(self.progress),onRefresh:self=>sync(self.progress)}));
+  const fade=stacked?{trigger:stage,start:'center 22%',end:'bottom top',scrub:true}:{trigger:hero,start:()=>'top+='+H()*.45+' top',end:()=>'top+='+H()*.9+' top',scrub:true};
+  gsap.to(inner,{scale:1.05,ease:'none',immediateRender:false,scrollTrigger:drift});
+  gsap.to(stage,{yPercent:-5,ease:'none',immediateRender:false,scrollTrigger:drift});
+  gsap.to(stage,{opacity:0,ease:'none',immediateRender:false,scrollTrigger:fade});
+  gsap.to(inner,{y:-12,rotation:.7,duration:4.2,yoyo:true,repeat:-1,ease:'sine.inOut'});
   if(FINE_POINTER){
     const mv=e=>gsap.to(plate,{x:-(e.clientX/innerWidth-.5)*18,duration:1.1,ease:'power3.out',overwrite:'auto'});
     hero.addEventListener('pointermove',mv);
     cleanups.push(()=>hero.removeEventListener('pointermove',mv));
   }
-  /* scroll: the render drifts up and grows slightly, then fades as the hero leaves */
-  const stacked=getComputedStyle(stage).position!=='absolute'; // phones: the render sits below the copy, so key the scroll effects to the render itself
-  const drift=stacked?{trigger:stage,start:'top bottom',end:'bottom top',scrub:true}:{trigger:hero,start:'top top',end:'bottom top',scrub:true};
-  const fade=stacked?{trigger:stage,start:'center 22%',end:'bottom top',scrub:true}:{trigger:hero,start:()=>'top+='+H()*.45+' top',end:()=>'top+='+H()*.9+' top',scrub:true};
-  gsap.to(img,{scale:1.06,ease:'none',immediateRender:false,scrollTrigger:drift});
-  gsap.to(stage,{yPercent:-5,ease:'none',immediateRender:false,scrollTrigger:drift});
-  gsap.to(stage,{opacity:0,ease:'none',immediateRender:false,scrollTrigger:fade});
+  if(/[?&]dbg/.test(location.search)) window.__hc={T,E,settle};
+  if(cupsIntroDone){ E.progress(1); T.time(settle); sync(st.progress); }
+  else splashDone.then(()=>{
+    E.play();
+    gsap.delayedCall(.7,()=>T.tweenTo(settle,{duration:settle*1.1,ease:'none',onComplete:()=>{ introDone=true; cupsIntroDone=true; sync(st.progress); }}));
+  });
 }
 const state={mm:{home:null,menu:null}};
 
