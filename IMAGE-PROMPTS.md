@@ -1,3 +1,14 @@
+# STATUS
+
+Product photos are now **integrated**: 19 drinks, the hero coffee and 6 pastries were extracted from the supplied reference sheet (cut out, background removed, exported as WebP with transparency).
+Files live in `site/images/drinks/` and `site/images/pastries/`; names equal the product ids in the product data.
+
+**Resolution note:** the source sheet is small (each item ~150-250 px), so the cutouts were upscaled ~3x. They look good at card size but will be soft if shown much larger. To upgrade, replace any file with a higher-resolution transparent WebP of the same name (900x1200 for drinks, 900x700 for pastries). No code change is needed.
+
+The rest of this file is the original shot list and prompt guide for re-shooting at higher quality.
+
+---
+
 # ELZORI product photography: shot list and AI prompts
 
 The website loads one transparent image per product from `site/images/drinks/<id>.webp`
